@@ -224,17 +224,17 @@ export default function Category() {
     );
   };
 
-  const rightToolbarTemplate = () => {
-    return (
-      <Button
-        label="Tải xuống"
-        icon="pi pi-upload"
-        style={{ marginRight: "50px" }}
-        className="p-button-help"
-        onClick={exportCSV}
-      />
-    );
-  };
+  // const rightToolbarTemplate = () => {
+  //   return (
+  //     <Button
+  //       label="Tải xuống"
+  //       icon="pi pi-upload"
+  //       style={{ marginRight: "50px" }}
+  //       className="p-button-help"
+  //       onClick={exportCSV}
+  //     />
+  //   );
+  // };
 
   const imageBodyTemplate = (rowData) => {
     return (
@@ -368,7 +368,7 @@ export default function Category() {
           <Toolbar
             className="mb-4"
             left={leftToolbarTemplate}
-            right={rightToolbarTemplate}
+            // right={rightToolbarTemplate}
           ></Toolbar>
 
           <DataTable
@@ -382,12 +382,12 @@ export default function Category() {
             currentPageReportTemplate="Đang hiển thị {first} đến {last} trong tổng số {totalRecords} loại kế hoạch"
             header={header}
           >
-            <Column
+            {/* <Column
               field="category_id"
               header="Mã"
               sortable
               style={{ minWidth: "11rem" }}
-            ></Column>
+            ></Column> */}
 
             <Column
               field="category_name"
@@ -399,7 +399,6 @@ export default function Category() {
             <Column
               field="description"
               header="Chi tiết"
-              sortable
               style={{ minWidth: "12rem" }}
             ></Column>
 

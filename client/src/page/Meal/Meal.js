@@ -233,17 +233,17 @@ export default function Meal() {
     );
   };
 
-  const rightToolbarTemplate = () => {
-    return (
-      <Button
-        label="Tải xuống"
-        icon="pi pi-upload"
-        style={{ marginRight: "50px" }}
-        className="p-button-help"
-        onClick={exportCSV}
-      />
-    );
-  };
+  // const rightToolbarTemplate = () => {
+  //   return (
+  //     <Button
+  //       label="Tải xuống"
+  //       icon="pi pi-upload"
+  //       style={{ marginRight: "50px" }}
+  //       className="p-button-help"
+  //       onClick={exportCSV}
+  //     />
+  //   );
+  // };
 
   const imageBodyTemplate = (rowData) => {
     return (
@@ -389,9 +389,9 @@ export default function Meal() {
           <Toolbar
             className="mb-4"
             left={leftToolbarTemplate}
-            right={rightToolbarTemplate}
+            // right={rightToolbarTemplate}
           ></Toolbar>
-
+          {/*Bảng hiển thị dữ liệu */}
           <DataTable
             ref={dt}
             value={products}
@@ -403,12 +403,12 @@ export default function Meal() {
             currentPageReportTemplate="Đang hiển thị {first} đến {last} trong tổng số {totalRecords} thực đơn"
             header={header}
           >
-            <Column
+            {/* <Column
               field="meal_id"
               header="Mã"
               sortable
               style={{ minWidth: "11rem" }}
-            ></Column>
+            ></Column> */}
 
             <Column
               field="meal_name"
@@ -424,7 +424,7 @@ export default function Meal() {
                   : item.description
               }
               header="Miêu tả"
-              sortable
+              // sortable
               style={{ minWidth: "12rem" }}
             ></Column>
 
@@ -450,7 +450,7 @@ export default function Meal() {
             ></Column>
           </DataTable>
         </div>
-        // popup chi tiet
+        {/*popup xem chi tiết */}
         <Dialog
           visible={detailproductDialog}
           style={{ width: "32rem" }}
@@ -537,7 +537,7 @@ export default function Meal() {
             </div>
           </div>
         </Dialog>
-        //popup chinh sua
+        {/*popup chỉnh sửa */}
         <Dialog
           visible={productDialog}
           style={{ width: "32rem" }}

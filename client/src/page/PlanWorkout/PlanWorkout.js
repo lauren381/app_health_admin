@@ -437,17 +437,17 @@ export default function PlanWorkout() {
     );
   };
 
-  const rightToolbarTemplate = () => {
-    return (
-      <Button
-        label="Tải xuống"
-        icon="pi pi-upload"
-        style={{ marginRight: "50px" }}
-        className="p-button-help"
-        onClick={exportCSV}
-      />
-    );
-  };
+  // const rightToolbarTemplate = () => {
+  //   return (
+  //     <Button
+  //       label="Tải xuống"
+  //       icon="pi pi-upload"
+  //       style={{ marginRight: "50px" }}
+  //       className="p-button-help"
+  //       onClick={exportCSV}
+  //     />
+  //   );
+  // };
 
   const imageBodyTemplate = (rowData) => {
     return (
@@ -727,7 +727,7 @@ export default function PlanWorkout() {
           <Toolbar
             className="mb-4"
             left={leftToolbarTemplate}
-            right={rightToolbarTemplate}
+            // right={rightToolbarTemplate}
           ></Toolbar>
           <DataTable
             ref={dt}
@@ -740,12 +740,12 @@ export default function PlanWorkout() {
             currentPageReportTemplate="Đang hiển thị {first} đến {last} trong tổng số {totalRecords} kế hoạch tập luyện"
             header={header}
           >
-            <Column
+            {/* <Column
               field="plan_id"
               header="Mã"
               sortable
               style={{ minWidth: "11rem" }}
-            ></Column>
+            ></Column> */}
             <Column
               field="plan_name"
               header="Kế hoạch"
@@ -755,7 +755,6 @@ export default function PlanWorkout() {
             <Column
               field="goal"
               header="Mục tiêu"
-              sortable
               style={{ minWidth: "12rem" }}
             ></Column>
 
@@ -781,7 +780,7 @@ export default function PlanWorkout() {
             ></Column>
           </DataTable>
         </div>
-        // chinh sua
+        {/*chinh sua */}
         <Dialog
           visible={productDialog}
           style={{ width: "80rem" }}
@@ -1088,7 +1087,7 @@ export default function PlanWorkout() {
             })}
           </div>
         </Dialog>
-        //popup thong bao xoa
+        {/* //popup thong bao xoa */}
         <Dialog
           visible={deleteProductDialog}
           style={{ width: "32rem" }}
@@ -1111,7 +1110,7 @@ export default function PlanWorkout() {
             )}
           </div>
         </Dialog>
-        //popup xem chi tiet
+        {/*popup xem chi tiet */}
         <Dialog
           visible={detailProductDialog1}
           style={{ width: "80rem" }}
@@ -1357,7 +1356,7 @@ export default function PlanWorkout() {
             })}
           </div>
         </Dialog>
-        //popup them moi danh sach thuc don va bai tap
+        {/*popup thêm mới danh sách và thực đơn */}
         <Dialog
           visible={deleteProductDialog1}
           style={{ width: "32rem" }}
@@ -1432,7 +1431,7 @@ export default function PlanWorkout() {
             )}
           </div>
         </Dialog>
-        //popup them chi tiet cho tung ngay
+        {/*popup thêm chi tiet từng ngày*/}
         <Dialog
           visible={deleteProductDialog2}
           style={{ width: "32rem" }}
@@ -1525,7 +1524,7 @@ export default function PlanWorkout() {
             <button onClick={handleAddForm}>Thêm dữ liệu</button>
           </div>
         </Dialog>
-        //popup xoa
+        {/*popup xóa */}
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}

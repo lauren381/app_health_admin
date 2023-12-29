@@ -220,17 +220,17 @@ export default function User() {
     );
   };
 
-  const rightToolbarTemplate = () => {
-    return (
-      <Button
-        label="Tải xuống"
-        icon="pi pi-upload"
-        style={{ marginRight: "50px" }}
-        className="p-button-help"
-        onClick={exportCSV}
-      />
-    );
-  };
+  // const rightToolbarTemplate = () => {
+  //   return (
+  //     <Button
+  //       label="Tải xuống"
+  //       icon="pi pi-upload"
+  //       style={{ marginRight: "50px" }}
+  //       className="p-button-help"
+  //       onClick={exportCSV}
+  //     />
+  //   );
+  // };
 
   const imageBodyTemplate = (rowData) => {
     return (
@@ -250,13 +250,6 @@ export default function User() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        {/* <Button
-          icon="pi pi-pencil"
-          rounded
-          outlined
-          className="mr-2"
-          onClick={() => editProduct(rowData)}
-        /> */}
         <Button
           icon="pi pi-trash"
           rounded
@@ -349,7 +342,7 @@ export default function User() {
           <Toolbar
             className="mb-4"
             left={leftToolbarTemplate}
-            right={rightToolbarTemplate}
+            // right={rightToolbarTemplate}
           ></Toolbar>
 
           <DataTable
@@ -363,12 +356,12 @@ export default function User() {
             currentPageReportTemplate="Đang hiển thị {first} đến {last} trong tổng số {totalRecords} người dùng"
             header={header}
           >
-            <Column
+            {/* <Column
               field="user_id"
               header="Mã"
               sortable
               style={{ minWidth: "11rem" }}
-            ></Column>
+            ></Column> */}
 
             <Column
               field="full_name"
@@ -380,14 +373,12 @@ export default function User() {
             <Column
               field="email"
               header="Email"
-              sortable
               style={{ minWidth: "12rem" }}
             ></Column>
 
             <Column
               field="phone_number"
               header="Phone"
-              sortable
               style={{ minWidth: "12rem" }}
             ></Column>
 

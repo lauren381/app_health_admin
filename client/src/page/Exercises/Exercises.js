@@ -253,17 +253,17 @@ export default function Exercises() {
     );
   };
 
-  const rightToolbarTemplate = () => {
-    return (
-      <Button
-        label="Tải xuống"
-        icon="pi pi-upload"
-        style={{ marginRight: "50px" }}
-        className="p-button-help"
-        onClick={exportCSV}
-      />
-    );
-  };
+  // const rightToolbarTemplate = () => {
+  //   return (
+  //     <Button
+  //       label="Tải xuống"
+  //       icon="pi pi-upload"
+  //       style={{ marginRight: "50px" }}
+  //       className="p-button-help"
+  //       onClick={exportCSV}
+  //     />
+  //   );
+  // };
 
   const imageBodyTemplate = (rowData) => {
     return (
@@ -397,7 +397,7 @@ export default function Exercises() {
           <Toolbar
             className="mb-4"
             left={leftToolbarTemplate}
-            right={rightToolbarTemplate}
+            // right={rightToolbarTemplate}
           ></Toolbar>
 
           <DataTable
@@ -411,12 +411,12 @@ export default function Exercises() {
             currentPageReportTemplate="Đang hiển thị {first} đến {last} trong tổng số {totalRecords} bài tập"
             header={header}
           >
-            <Column
+            {/* <Column
               field="exercise_id"
               header="Mã"
               sortable
               style={{ minWidth: "11rem" }}
-            ></Column>
+            ></Column> */}
 
             <Column
               field="exercise_name"
@@ -428,7 +428,6 @@ export default function Exercises() {
             <Column
               field="description"
               header="Miêu tả"
-              sortable
               style={{ minWidth: "12rem" }}
             ></Column>
 
