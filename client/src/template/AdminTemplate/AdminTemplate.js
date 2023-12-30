@@ -8,9 +8,8 @@ export const AdminTemplate = (props) => {
   return (
     <Route
       {...restProps}
-      render={
-        (propsRoute) => {
-          // if (localStorage.getItem("admin")) {
+      render={(propsRoute) => {
+        if (localStorage.getItem("admin")) {
           return (
             <div>
               {/* Banner */}
@@ -135,10 +134,9 @@ export const AdminTemplate = (props) => {
             </div>
           );
         }
-        //   alert("Bạn không đủ quyền truy cập! Vui lòng đăng nhập vai trò admin");
-        //   history.push("/");
-        // }
-      }
+        alert("Bạn không đủ quyền truy cập! Vui lòng đăng nhập vai trò admin");
+        history.push("/");
+      }}
     />
   );
 };

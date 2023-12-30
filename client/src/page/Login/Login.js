@@ -11,7 +11,7 @@ export default function Login() {
       console.log(value);
       if (value.username === "admin" && value.password === "1234") {
         history.push("/meal");
-        localStorage.setItem("admin", "login");
+        localStorage.setItem("admin", "admin");
       } else {
         alert("Vui lòng đăng nhập với vai trò admin");
       }
