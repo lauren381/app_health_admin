@@ -16,10 +16,6 @@ const getListWorkout = async (req, res) => {
       },
       include: [
         {
-          model: models.Category,
-          as: "category",
-        },
-        {
           model: models.PlanExercises,
           as: "PlanExercises",
           include: {
@@ -154,7 +150,7 @@ const suggestWorkout = async (req, res) => {
     const user = await models.Users.findOne({
       where: {
         user_id: user_id, // Thay user_id bằng giá trị cụ thể
-      },
+      }
     });
 
     const fitnessLevel = user.message.split(":")[1].trim(); // Extract fitness_level from user.message
@@ -162,7 +158,7 @@ const suggestWorkout = async (req, res) => {
     const workouts = await models.WorkoutPlans.findAll({
       where: {
         fitness_level: { [Op.like]: fitnessLevel },
-        status: "active",
+        status: 'active'
       },
       include: [
         {
@@ -209,7 +205,7 @@ const getListWorkoutByCategory = async (req, res) => {
   try {
     const { id } = req.params;
     const workouts = await models.WorkoutPlans.findAll({
-      where: { category_id: id, status: "active" },
+      where: { category_id: id ,  status: 'active'},
       include: [
         {
           model: models.PlanExercises,
@@ -351,7 +347,7 @@ const updateWorkout = async (req, res) => {
 
     succesCode(res, updatedWorkout, "Update Workout Successfully!!!");
   } catch (error) {
-    errorCode(res, "Backend error");
+     errorCode(res, "Backend error");
   }
 };
 const updateWorkout1 = async (req, res) => {
@@ -391,10 +387,11 @@ const updateWorkout1 = async (req, res) => {
     );
 
     // Cập nhật danh sách meal và exercise
+   
 
     succesCode(res, updatedWorkout, "Update Workout Successfully!!!");
   } catch (error) {
-    errorCode(res, "Backend error");
+     errorCode(res, "Backend error");
   }
 };
 const deletePlanMeal = async (req, res) => {
@@ -498,5 +495,5 @@ module.exports = {
   searchWorkoutByName,
   createPlanDaily,
   deletePlanDaily,
-  updateWorkout1,
+  updateWorkout1
 };

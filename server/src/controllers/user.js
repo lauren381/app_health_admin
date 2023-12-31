@@ -184,6 +184,26 @@ const history = async (req, res) => {
                 as: "meal",
               },
             },
+            {
+              model: models.DailyPlanDetails,
+              as: "DailyPlanDetails",
+              include: [
+                {
+                  model: models.Exercises,
+                  as: "exercise",
+                },
+                {
+                  model: models.Meals,
+                  as: "meal",
+                },
+              ],
+              order: [
+                [
+                  sequelize.literal("CAST(DailyPlanDetails.day AS UNSIGNED)"),
+                  "ASC",
+                ],
+              ],
+            },
           ],
         },
       ],
@@ -193,6 +213,32 @@ const history = async (req, res) => {
   } catch (error) {
     console.error("Error:", error);
     return errorCode(res, "Backend error");
+  }
+};
+
+const historyday = async (req, res) => {
+  try {
+    const { user_id, plan_id } = req.params;
+
+    const detail = await models.DailyPlanDetails.findAll({
+      attributes: ["detail_id", "name", "description", "day"],
+      include: [
+        {
+          model: models.UserDailyPlanCompletion,
+          as: "UserDailyPlanCompletions",
+          where: { user_id, completed: true },
+          attributes: [], //
+        },
+      ],
+      where: {
+        plan_id,
+      },
+    });
+
+    succesCode(res, detail, "Lấy ngày hoàn thành thành công");
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -224,22 +270,19 @@ const deleteUser = async (req, res) => {
   }
 };
 
-
-
-
 const searchUserByName = async (req, res) => {
   let { full_name } = req.body;
 
   // // Chuẩn hóa chuỗi Unicode
   // full_name = full_name.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-console.log(full_name)
+  console.log(full_name);
   try {
     const user = await models.Users.findAll({
       where: {
         full_name: {
-          [Op.like]: `%${full_name}%` // Sử dụng Op.like thay vì Op.iLike
-        }
-      }
+          [Op.like]: `%${full_name}%`, // Sử dụng Op.like thay vì Op.iLike
+        },
+      },
     });
 
     if (user.length === 0) {
@@ -260,5 +303,6 @@ module.exports = {
   getUserByID,
   history,
   deleteUser,
-  searchUserByName
+  searchUserByName,
+  historyday,
 };
