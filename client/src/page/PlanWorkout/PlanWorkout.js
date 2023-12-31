@@ -507,7 +507,7 @@ export default function PlanWorkout() {
           }}
         />
 
-        <Button
+        {/* <Button
           icon="pi-bars"
           rounded
           outlined
@@ -521,7 +521,7 @@ export default function PlanWorkout() {
             setSelectedIds1([]);
             setSelectedNames1([]);
           }}
-        />
+        /> */}
 
         <Button
           icon="pi pi-ellipsis-v"
@@ -934,90 +934,14 @@ export default function PlanWorkout() {
             <div></div>
           ) : (
             <div>
-              {product.PlanExercises?.length !== 0 ? (
-                <div style={{ margin: "50px 0", fontWeight: 800 }}>
-                  Danh sách bài tập :
-                </div>
-              ) : (
-                <div></div>
-              )}
-            </div>
-          )}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
-            {product.PlanExercises?.map((item, index) => {
-              return (
-                <div>
-                  <img
-                    src={item.exercise?.image}
-                    style={{ width: "200px", height: "200px" }}
-                  />
-                  <div style={{ fontWeight: 700, padding: "20px 0" }}>
-                    {item.exercise?.exercise_name}
-                  </div>
-                  <button
-                    style={{
-                      padding: "5px 10px",
-                      color: "wheat",
-                      background: "red",
-                    }}
-                    onClick={() => {
-                      handleDelete1(item.id);
-                    }}
-                  >
-                    Xóa
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-
-          {hide === false ? (
-            <div></div>
-          ) : (
-            <div>
-              {product.PlanMeals?.length !== 0 ? (
-                <div style={{ margin: "50px 0", fontWeight: 800 }}>
-                  Danh sách thực phẩm :
-                </div>
-              ) : (
-                <div></div>
-              )}
-            </div>
-          )}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
-            {product.PlanMeals?.map((item, index) => {
-              return (
-                <div>
-                  <img
-                    src={item.meal?.image}
-                    style={{ width: "200px", height: "200px" }}
-                  />
-                  <div style={{ fontWeight: 700, padding: "20px 0" }}>
-                    {item.meal?.meal_name}
-                  </div>
-                  <button
-                    style={{
-                      padding: "5px 10px",
-                      color: "wheat",
-                      background: "red",
-                    }}
-                    onClick={() => {
-                      handleDelete(item.id);
-                    }}
-                  >
-                    Xóa
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-
-          {hide === false ? (
-            <div></div>
-          ) : (
-            <div>
               {product.DailyPlanDetails?.length !== 0 ? (
-                <div style={{ margin: "50px 0", fontWeight: 800 }}>
+                <div
+                  style={{
+                    margin: "50px 0",
+                    fontWeight: 800,
+                    fontSize: "30px",
+                  }}
+                >
                   Thực đơn, bài tập cho mỗi ngày :
                 </div>
               ) : (
@@ -1038,7 +962,7 @@ export default function PlanWorkout() {
                   <div style={{ display: "flex" }}>
                     <div
                       style={{
-                        fontSize: "30px",
+                        fontSize: "20px",
                         fontWeight: 800,
                         marginRight: "30px",
                       }}
@@ -1058,7 +982,9 @@ export default function PlanWorkout() {
                       Xóa
                     </button>
                   </div>
-                  <div style={{ padding: "15px 0" }}>Ngày thứ: {item.day}</div>
+                  <div style={{ padding: "15px 0", fontWeight: 800 }}>
+                    Ngày thứ: {item.day}
+                  </div>
                   <div style={{ padding: "15px 0" }}>{item.description}</div>
                   <div style={{ display: "flex" }}>
                     <div style={{ marginRight: "300px" }}>
@@ -1238,67 +1164,18 @@ export default function PlanWorkout() {
             </div>
           </div>
 
-          <div>
-            {product.PlanExercises?.length !== 0 ? (
-              <div style={{ margin: "20px 0", fontWeight: 800 }}>
-                Danh sách bài tập :
-              </div>
-            ) : (
-              <div></div>
-            )}
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
-            {product.PlanExercises?.map((item, index) => {
-              return (
-                <div>
-                  <img
-                    src={item.exercise?.image}
-                    style={{ width: "200px", height: "200px" }}
-                  />
-                  <div style={{ fontWeight: 700, padding: "20px 0" }}>
-                    {item.exercise?.exercise_name}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {hide === false ? (
-            <div></div>
-          ) : (
-            <div>
-              {product.PlanMeals?.length !== 0 ? (
-                <div style={{ margin: "20px 0", fontWeight: 800 }}>
-                  Danh sách thực phẩm :
-                </div>
-              ) : (
-                <div></div>
-              )}
-            </div>
-          )}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
-            {product.PlanMeals?.map((item, index) => {
-              return (
-                <div>
-                  <img
-                    src={item.meal?.image}
-                    style={{ width: "200px", height: "200px" }}
-                  />
-                  <div style={{ fontWeight: 700, padding: "20px 0" }}>
-                    {item.meal?.meal_name}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
           {hide === false ? (
             <div></div>
           ) : (
             <div>
               {product.DailyPlanDetails?.length !== 0 ? (
-                <div style={{ margin: "50px 0", fontWeight: 800 }}>
+                <div
+                  style={{
+                    margin: "50px 0",
+                    fontWeight: 800,
+                    fontSize: "30px",
+                  }}
+                >
                   Thực đơn, bài tập cho mỗi ngày :
                 </div>
               ) : (
@@ -1319,7 +1196,7 @@ export default function PlanWorkout() {
                   <div style={{ display: "flex" }}>
                     <div
                       style={{
-                        fontSize: "30px",
+                        fontSize: "20px",
                         fontWeight: 800,
                         marginRight: "30px",
                       }}
@@ -1327,7 +1204,9 @@ export default function PlanWorkout() {
                       {item.name}
                     </div>
                   </div>
-                  <div style={{ padding: "15px 0" }}>Ngày thứ: {item.day}</div>
+                  <div style={{ padding: "15px 0", fontWeight: 800 }}>
+                    Ngày thứ: {item.day}
+                  </div>
                   <div style={{ padding: "15px 0" }}>{item.description}</div>
                   <div style={{ display: "flex" }}>
                     <div style={{ marginRight: "300px" }}>
@@ -1357,7 +1236,7 @@ export default function PlanWorkout() {
           </div>
         </Dialog>
         {/*popup thêm mới danh sách và thực đơn */}
-        <Dialog
+        {/* <Dialog
           visible={deleteProductDialog1}
           style={{ width: "32rem" }}
           breakpoints={{ "960px": "75vw", "641px": "90vw" }}
@@ -1390,7 +1269,7 @@ export default function PlanWorkout() {
                   </select>
 
                   {/* Hiển thị các lựa chọn đã chọn */}
-                  <div>
+        {/* <div>
                     <h4>Các lựa chọn đã chọn:</h4>
                     <ul>
                       {selectedNames?.map((option, index) => (
@@ -1430,7 +1309,8 @@ export default function PlanWorkout() {
               </div>
             )}
           </div>
-        </Dialog>
+        </Dialog> */}
+
         {/*popup thêm chi tiet từng ngày*/}
         <Dialog
           visible={deleteProductDialog2}

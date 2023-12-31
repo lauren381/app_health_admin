@@ -5,6 +5,7 @@ const _Exercises = require("./Exercises");
 const _Meals = require("./Meals");
 const _PlanExercises = require("./PlanExercises");
 const _PlanMeals = require("./PlanMeals");
+const _UserDailyPlanCompletion = require("./UserDailyPlanCompletion");
 const _UserSelectedPlans = require("./UserSelectedPlans");
 const _Users = require("./Users");
 const _WorkoutPlans = require("./WorkoutPlans");
@@ -16,12 +17,15 @@ function initModels(sequelize) {
   const Meals = _Meals(sequelize, DataTypes);
   const PlanExercises = _PlanExercises(sequelize, DataTypes);
   const PlanMeals = _PlanMeals(sequelize, DataTypes);
+  const UserDailyPlanCompletion = _UserDailyPlanCompletion(sequelize, DataTypes);
   const UserSelectedPlans = _UserSelectedPlans(sequelize, DataTypes);
   const Users = _Users(sequelize, DataTypes);
   const WorkoutPlans = _WorkoutPlans(sequelize, DataTypes);
 
   WorkoutPlans.belongsTo(Category, { as: "category", foreignKey: "category_id"});
   Category.hasMany(WorkoutPlans, { as: "WorkoutPlans", foreignKey: "category_id"});
+  UserDailyPlanCompletion.belongsTo(DailyPlanDetails, { as: "detail", foreignKey: "detail_id"});
+  DailyPlanDetails.hasMany(UserDailyPlanCompletion, { as: "UserDailyPlanCompletions", foreignKey: "detail_id"});
   DailyPlanDetails.belongsTo(Exercises, { as: "exercise", foreignKey: "exercise_id"});
   Exercises.hasMany(DailyPlanDetails, { as: "DailyPlanDetails", foreignKey: "exercise_id"});
   PlanExercises.belongsTo(Exercises, { as: "exercise", foreignKey: "exercise_id"});
@@ -30,6 +34,8 @@ function initModels(sequelize) {
   Meals.hasMany(DailyPlanDetails, { as: "DailyPlanDetails", foreignKey: "meal_id"});
   PlanMeals.belongsTo(Meals, { as: "meal", foreignKey: "meal_id"});
   Meals.hasMany(PlanMeals, { as: "PlanMeals", foreignKey: "meal_id"});
+  UserDailyPlanCompletion.belongsTo(Users, { as: "user", foreignKey: "user_id"});
+  Users.hasMany(UserDailyPlanCompletion, { as: "UserDailyPlanCompletions", foreignKey: "user_id"});
   UserSelectedPlans.belongsTo(Users, { as: "user", foreignKey: "user_id"});
   Users.hasMany(UserSelectedPlans, { as: "UserSelectedPlans", foreignKey: "user_id"});
   DailyPlanDetails.belongsTo(WorkoutPlans, { as: "plan", foreignKey: "plan_id"});
@@ -48,6 +54,7 @@ function initModels(sequelize) {
     Meals,
     PlanExercises,
     PlanMeals,
+    UserDailyPlanCompletion,
     UserSelectedPlans,
     Users,
     WorkoutPlans,
