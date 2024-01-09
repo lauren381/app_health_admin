@@ -275,7 +275,7 @@ const searchUserByName = async (req, res) => {
 
   // // Chuẩn hóa chuỗi Unicode
   // full_name = full_name.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  console.log(full_name);
+  // console.log(full_name);
   try {
     const user = await models.Users.findAll({
       where: {

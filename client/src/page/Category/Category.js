@@ -11,11 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { storage_bucket } from "./../../firebase";
 import { useFormik } from "formik";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import {
-  DeteleUserAction,
-  GetListUserAction,
-  SearchUserAction,
-} from "../../redux/action/UserAction";
+
 import {
   CreateCategoryAction,
   DeleteCategoryAction,
@@ -27,9 +23,9 @@ import {
 export default function Category() {
   const dispatch = useDispatch();
   const { arrCategory } = useSelector((root) => root.CategoryReducer);
-  console.log(arrCategory);
+  // console.log(arrCategory);
   let emptyProduct = {
-    user_id: "0",
+    category_id: "0",
 
     category_name: "",
     description: "",
@@ -59,18 +55,11 @@ export default function Category() {
     );
   };
 
-  const [inputValue, setInputValue] = useState("");
   const [text, setText] = useState("Thêm mới loại kế hoạch");
   const [products, setProducts] = useState([]);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-  const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [product, setProduct] = useState(emptyProduct);
-  const [tempProduct, setTempProduct] = useState({ ...emptyProduct });
-  const [selectedProducts, setSelectedProducts] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
-  const [globalFilter, setGlobalFilter] = useState(null);
-  console.log(globalFilter);
   const toast = useRef(null);
   const dt = useRef(null);
 
@@ -83,7 +72,6 @@ export default function Category() {
   }, [arrCategory]);
 
   const hideDialog = () => {
-    setSubmitted(false);
     setProductDialog(false);
   };
 
@@ -91,19 +79,13 @@ export default function Category() {
     setDeleteProductDialog(false);
   };
 
-  const hideDeleteProductsDialog = () => {
-    setDeleteProductsDialog(false);
-  };
-
   const saveProduct = async () => {
-    setSubmitted(true);
-
     if (product.description) {
       let _products = [...products];
       let _product = { ...product };
       _product.calories = Number(_product.calories);
-      console.log(_product);
-      if (product.user_id !== "0") {
+      // console.log(_product);
+      if (product.category_id !== "0") {
         const index = findIndexById(product.id);
 
         _products[index] = _product;
@@ -128,10 +110,6 @@ export default function Category() {
         });
         setProductDialog(false);
       }
-
-      // setProducts(_products);
-      // setProductDialog(false);
-      // setProduct(emptyProduct);
     }
   };
 
@@ -139,7 +117,6 @@ export default function Category() {
     setText("Chỉnh sửa loại kế hoạch");
     setProduct({ ...product });
     setProductDialog(true);
-    setTempProduct({ ...product });
   };
 
   const deleteProduct = async () => {
@@ -162,24 +139,6 @@ export default function Category() {
     return index;
   };
 
-  const exportCSV = () => {
-    dt.current.exportCSV();
-  };
-
-  const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts.includes(val));
-
-    setProducts(_products);
-    setDeleteProductsDialog(false);
-    setSelectedProducts(null);
-    toast.current.show({
-      severity: "success",
-      summary: "Successful",
-      detail: "Deleted  Achivement",
-      life: 3000,
-    });
-  };
-
   const onInputChange = (e, name) => {
     if (name === "achivementLogo") {
       uploadFile(e); // Call uploadFile function when achivementLogo value changes
@@ -198,13 +157,11 @@ export default function Category() {
     const forbiddenCharacters = /[@!#$%^&*]/g;
 
     if (!forbiddenCharacters.test(newValue)) {
-      setInputValue(newValue);
       // Thực hiện các xử lý khác tại đây
     }
   };
   const openNew = () => {
     setProduct(emptyProduct);
-    setSubmitted(false);
     setProductDialog(true);
   };
   const leftToolbarTemplate = () => {
@@ -281,7 +238,7 @@ export default function Category() {
       category_name: "",
     },
     onSubmit: (value) => {
-      console.log(value);
+      // console.log(value);
       const action = SearchCategoryAction(value);
       dispatch(action);
     },
@@ -340,22 +297,6 @@ export default function Category() {
         icon="pi pi-times"
         outlined
         onClick={hideDeleteProductDialog}
-      />
-    </React.Fragment>
-  );
-  const deleteProductsDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="No"
-        icon="pi pi-times"
-        outlined
-        onClick={hideDeleteProductsDialog}
-      />
-      <Button
-        label="Yes"
-        icon="pi pi-check"
-        severity="danger"
-        onClick={deleteSelectedProducts}
       />
     </React.Fragment>
   );
@@ -444,7 +385,7 @@ export default function Category() {
               required
               autoFocus
             />
-            {product.category_name === "" && (
+            {product.category_id !== "0" && product.category_name === "" && (
               <small className="p-error">Name is required.</small>
             )}
           </div>
@@ -465,7 +406,7 @@ export default function Category() {
               rows={3}
               cols={20}
             />
-            {product.description === "" && (
+            {product.category_id !== "0" && product.description === "" && (
               <small className="p-error">Name is required.</small>
             )}
           </div>
@@ -480,7 +421,7 @@ export default function Category() {
             >
               Hình ảnh
             </label>
-            {product.image === "" && (
+            {product.category_id !== "0" && product.image === "" && (
               <small className="p-error">Name is required.</small>
             )}
             <div
@@ -514,28 +455,6 @@ export default function Category() {
               <span>
                 Bạn có chắc chắn muốn xóa loại kế hoạch{" "}
                 <b>{product.category_name}</b>?
-              </span>
-            )}
-          </div>
-        </Dialog>
-
-        <Dialog
-          visible={deleteProductsDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          header="Confirm"
-          modal
-          footer={deleteProductsDialogFooter}
-          onHide={hideDeleteProductsDialog}
-        >
-          <div className="confirmation-content">
-            <i
-              className="pi pi-exclamation-triangle mr-3"
-              style={{ fontSize: "2rem" }}
-            />
-            {product && (
-              <span>
-                Are you sure you want to delete the selected products?
               </span>
             )}
           </div>

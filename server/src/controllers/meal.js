@@ -21,14 +21,14 @@ const searchMealByName = async (req, res) => {
 
   // // Chuẩn hóa chuỗi Unicode
   // mealName = mealName.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-console.log(mealName)
+  // console.log(mealName)
   try {
     const meals = await models.Meals.findAll({
       where: {
         meal_name: {
-          [Op.like]: `%${mealName}%` // Sử dụng Op.like thay vì Op.iLike
-        }
-      }
+          [Op.like]: `%${mealName}%`, // Sử dụng Op.like thay vì Op.iLike
+        },
+      },
     });
 
     if (meals.length === 0) {
@@ -41,7 +41,6 @@ console.log(mealName)
     return errorCode(res, "Backend error");
   }
 };
-
 
 const updateMeal = async (req, res) => {
   try {
@@ -81,7 +80,6 @@ const createMeal = async (req, res) => {
   }
 };
 
-
 const deleteMeal = async (req, res) => {
   let { meal_id } = req.params;
 
@@ -99,7 +97,6 @@ const deleteMeal = async (req, res) => {
       },
     });
 
-
     // Nếu meal_id không tồn tại trong cả PlanMeals và DailyPlanDetails, thực hiện xóa
     if (!planMealExists && !dailyPlanDetailExists) {
       const meal = await models.Meals.destroy({ where: { meal_id } });
@@ -115,4 +112,10 @@ const deleteMeal = async (req, res) => {
     return errorCode(res, "Backend error");
   }
 };
-module.exports = { getListMeal, updateMeal, createMeal , searchMealByName,deleteMeal};
+module.exports = {
+  getListMeal,
+  updateMeal,
+  createMeal,
+  searchMealByName,
+  deleteMeal,
+};

@@ -8,7 +8,6 @@ export const GetListMealAction = () => {
         type: "GET_LIST_MEAL",
         arrMeal: result.data.data,
       };
-      console.log(result.data.data);
       dispatch(action);
     } catch (error) {
       console.log(error);
@@ -24,7 +23,7 @@ export const SearchMealAction = (value) => {
         type: "GET_LIST_MEAL",
         arrMeal: result.data.data,
       };
-      console.log(result.data.data);
+      // console.log(result.data.data);
       dispatch(action);
     } catch (error) {
       console.log(error);

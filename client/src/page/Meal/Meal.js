@@ -22,7 +22,7 @@ import {
 export default function Meal() {
   const dispatch = useDispatch();
   const { arrMeal } = useSelector((root) => root.MealReducer);
-  console.log(arrMeal);
+  // console.log(arrMeal);
   let emptyProduct = {
     meal_id: "0",
     calories: 0,
@@ -47,7 +47,7 @@ export default function Meal() {
       (err) => console.log(err),
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-          console.log(url);
+          // console.log(url);
           const updatedProduct = { ...product, image: url }; // Update achivementLogo property in product object
           setProduct(updatedProduct);
         });
@@ -67,7 +67,7 @@ export default function Meal() {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
-  console.log(globalFilter);
+  // console.log(globalFilter);
   const toast = useRef(null);
   const dt = useRef(null);
 
@@ -109,7 +109,7 @@ export default function Meal() {
       let _products = [...products];
       let _product = { ...product };
       _product.calories = Number(_product.calories);
-      console.log(_product);
+      // console.log(_product);
       if (product.meal_id !== "0") {
         const index = findIndexById(product.id);
 
@@ -301,7 +301,7 @@ export default function Meal() {
       mealName: "",
     },
     onSubmit: (value) => {
-      console.log(value);
+      // console.log(value);
       const action = SearchMealAction(value);
       dispatch(action);
     },
@@ -380,7 +380,7 @@ export default function Meal() {
       />
     </React.Fragment>
   );
-  console.log(product.meal_name);
+  // console.log(product.meal_name);
   return (
     <div className="app-main__outer" style={{ margin: "20px 30px" }}>
       <div>
@@ -424,7 +424,6 @@ export default function Meal() {
                   : item.description
               }
               header="Miêu tả"
-              // sortable
               style={{ minWidth: "12rem" }}
             ></Column>
 
@@ -564,7 +563,7 @@ export default function Meal() {
               required
               autoFocus
             />
-            {product.meal_name === "" && (
+            {product.meal_id !== "0" && product.meal_name === "" && (
               <small className="p-error">Name is required.</small>
             )}
           </div>
@@ -585,7 +584,7 @@ export default function Meal() {
               required
               autoFocus
             />
-            {product.calories <= 0 && (
+            {product.meal_id !== "0" && product.calories <= 0 && (
               <small className="p-error">Calories is min 1.</small>
             )}
           </div>
@@ -606,7 +605,7 @@ export default function Meal() {
               rows={5}
               cols={20}
             />
-            {product.description === "" && (
+            {product.meal_id !== "0" && product.description === "" && (
               <small className="p-error">Description is required.</small>
             )}
           </div>
@@ -621,7 +620,7 @@ export default function Meal() {
             >
               Hình ảnh
             </label>
-            {product.image === "" && (
+            {product.meal_id !== "0" && product.image === "" && (
               <small className="p-error">Image is required.</small>
             )}
             <div

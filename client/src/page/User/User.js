@@ -1,26 +1,24 @@
-import React, { useState, useEffect, useRef } from "react";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { Toast } from "primereact/toast";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { useFormik } from "formik";
 import { Button } from "primereact/button";
-import { Toolbar } from "primereact/toolbar";
-import { InputTextarea } from "primereact/inputtextarea";
+import { Column } from "primereact/column";
+import { DataTable } from "primereact/datatable";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
+import { Toast } from "primereact/toast";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { storage_bucket } from "./../../firebase";
-import { useFormik } from "formik";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import {
   DeteleUserAction,
   GetListUserAction,
   SearchUserAction,
 } from "../../redux/action/UserAction";
+import { storage_bucket } from "./../../firebase";
 
 export default function User() {
   const dispatch = useDispatch();
   const { arrUser } = useSelector((root) => root.UserReducer);
-  console.log(arrUser);
+  // console.log(arrUser);
   let emptyProduct = {
     user_id: "0",
   };
@@ -40,7 +38,7 @@ export default function User() {
       (err) => console.log(err),
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-          console.log(url);
+          // console.log(url);
           const updatedProduct = { ...product, image: url }; // Update achivementLogo property in product object
           setProduct(updatedProduct);
         });
@@ -48,18 +46,9 @@ export default function User() {
     );
   };
 
-  const [inputValue, setInputValue] = useState("");
-  const [text, setText] = useState("Thêm mới người dùng");
   const [products, setProducts] = useState([]);
-  const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-  const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [product, setProduct] = useState(emptyProduct);
-  const [tempProduct, setTempProduct] = useState({ ...emptyProduct });
-  const [selectedProducts, setSelectedProducts] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
-  const [globalFilter, setGlobalFilter] = useState(null);
-  console.log(globalFilter);
   const toast = useRef(null);
   const dt = useRef(null);
 
@@ -71,64 +60,8 @@ export default function User() {
     setProducts(arrUser.filter((item) => item.status === "active"));
   }, [arrUser]);
 
-  const hideDialog = () => {
-    setSubmitted(false);
-    setProductDialog(false);
-  };
-
   const hideDeleteProductDialog = () => {
     setDeleteProductDialog(false);
-  };
-
-  const hideDeleteProductsDialog = () => {
-    setDeleteProductsDialog(false);
-  };
-
-  const saveProduct = async () => {
-    setSubmitted(true);
-
-    if (product.description) {
-      let _products = [...products];
-      let _product = { ...product };
-      _product.calories = Number(_product.calories);
-      console.log(_product);
-      if (product.user_id !== "0") {
-        const index = findIndexById(product.id);
-
-        _products[index] = _product;
-        // const action = await UpdateExercisesAction(product);
-        // await dispatch(action);
-        setProductDialog(false);
-        toast.current.show({
-          severity: "success",
-          summary: "Thành công",
-          detail: `Cập nhật người dùng ${product.exercise_name} thành công`,
-          life: 3000,
-        });
-        setText("Chỉnh sửa người dùng");
-      } else {
-        // const action = await CreateExercisesAction(_product);
-        // await dispatch(action);
-        toast.current.show({
-          severity: "success",
-          summary: "Thành công",
-          detail: "Tạo  mới người dùng thành công",
-          life: 3000,
-        });
-        setProductDialog(false);
-      }
-
-      // setProducts(_products);
-      // setProductDialog(false);
-      // setProduct(emptyProduct);
-    }
-  };
-
-  const editProduct = (product) => {
-    setText("Chỉnh sửa người dùng");
-    setProduct({ ...product });
-    setProductDialog(true);
-    setTempProduct({ ...product });
   };
 
   const deleteProduct = async () => {
@@ -148,89 +81,6 @@ export default function User() {
       },
     });
   };
-
-  const findIndexById = (id) => {
-    let index = -1;
-
-    for (let i = 0; i < products.length; i++) {
-      if (products[i].id === id) {
-        index = i;
-        break;
-      }
-    }
-
-    return index;
-  };
-
-  const exportCSV = () => {
-    dt.current.exportCSV();
-  };
-
-  const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts.includes(val));
-
-    setProducts(_products);
-    setDeleteProductsDialog(false);
-    setSelectedProducts(null);
-    toast.current.show({
-      severity: "success",
-      summary: "Successful",
-      detail: "Deleted  Achivement",
-      life: 3000,
-    });
-  };
-
-  const onInputChange = (e, name) => {
-    if (name === "achivementLogo") {
-      uploadFile(e); // Call uploadFile function when achivementLogo value changes
-    }
-
-    const val = (e.target && e.target.value) || "";
-    let _product = { ...product };
-
-    _product[`${name}`] = val;
-
-    setProduct(_product);
-
-    const newValue = e.target.value;
-
-    // Kiểm tra xem newValue có chứa các ký tự đặc biệt không mong muốn
-    const forbiddenCharacters = /[@!#$%^&*]/g;
-
-    if (!forbiddenCharacters.test(newValue)) {
-      setInputValue(newValue);
-      // Thực hiện các xử lý khác tại đây
-    }
-  };
-
-  const leftToolbarTemplate = () => {
-    return (
-      <div className="flex flex-wrap gap-2">
-        {/* <Button
-          label="Thêm mới"
-          icon="pi pi-plus"
-          severity="success"
-          onClick={() => {
-            openNew();
-            setText("Thêm mới người dùng");
-          }}
-        /> */}
-        {/* <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedProducts || !selectedProducts.length} /> */}
-      </div>
-    );
-  };
-
-  // const rightToolbarTemplate = () => {
-  //   return (
-  //     <Button
-  //       label="Tải xuống"
-  //       icon="pi pi-upload"
-  //       style={{ marginRight: "50px" }}
-  //       className="p-button-help"
-  //       onClick={exportCSV}
-  //     />
-  //   );
-  // };
 
   const imageBodyTemplate = (rowData) => {
     return (
@@ -266,7 +116,7 @@ export default function User() {
       full_name: "",
     },
     onSubmit: (value) => {
-      console.log(value);
+      // console.log(value);
       const action = SearchUserAction(value);
       dispatch(action);
     },
@@ -295,12 +145,7 @@ export default function User() {
       </span>
     </div>
   );
-  const productDialogFooter = (
-    <React.Fragment>
-      <Button label="Hủy bỏ" icon="pi pi-times" outlined onClick={hideDialog} />
-      <Button label="Hoàn thành" icon="pi pi-check" onClick={saveProduct} />
-    </React.Fragment>
-  );
+
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
@@ -317,34 +162,12 @@ export default function User() {
       />
     </React.Fragment>
   );
-  const deleteProductsDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="No"
-        icon="pi pi-times"
-        outlined
-        onClick={hideDeleteProductsDialog}
-      />
-      <Button
-        label="Yes"
-        icon="pi pi-check"
-        severity="danger"
-        onClick={deleteSelectedProducts}
-      />
-    </React.Fragment>
-  );
 
   return (
     <div className="app-main__outer" style={{ margin: "20px 30px" }}>
       <div>
         <Toast ref={toast} />
         <div className="card">
-          <Toolbar
-            className="mb-4"
-            left={leftToolbarTemplate}
-            // right={rightToolbarTemplate}
-          ></Toolbar>
-
           <DataTable
             ref={dt}
             value={products}
@@ -417,92 +240,6 @@ export default function User() {
         </div>
 
         <Dialog
-          visible={productDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          header={text}
-          modal
-          className="p-fluid"
-          footer={productDialogFooter}
-          onHide={hideDialog}
-        >
-          <div className="field">
-            <label
-              htmlFor="processTypeName"
-              className="font-bold"
-              style={{ fontWeight: "bold" }}
-            >
-              Tên người dùng
-            </label>
-            <br />
-            <InputText
-              id="exercise_name"
-              value={product.exercise_name}
-              onChange={(e) => onInputChange(e, "exercise_name")}
-              required
-              autoFocus
-            />
-          </div>
-          <div className="field">
-            <label
-              htmlFor="processTypeName"
-              className="font-bold"
-              style={{ fontWeight: "bold" }}
-            >
-              Video
-            </label>
-            <br />
-            <InputText
-              id="video_url"
-              value={product.video_url}
-              onChange={(e) => onInputChange(e, "video_url")}
-              required
-              autoFocus
-            />
-          </div>
-
-          <div className="field mt-5">
-            <label
-              htmlFor="description"
-              className="font-bold"
-              style={{ fontWeight: "bold" }}
-            >
-              Miêu tả
-            </label>
-            <InputTextarea
-              id="description"
-              value={product.description}
-              onChange={(e) => onInputChange(e, "description")}
-              required
-              rows={3}
-              cols={20}
-            />
-          </div>
-          <div
-            className="field mt-5"
-            style={{ display: "flex", flexDirection: "column" }}
-          >
-            <label
-              htmlFor="description"
-              className="font-bold"
-              style={{ fontWeight: "bold" }}
-            >
-              Hình ảnh
-            </label>
-            <div
-              style={{
-                height: "240px",
-                marginTop: "20px",
-                marginBottom: "20px",
-              }}
-            >
-              <img src={product.image} style={{ height: "100%" }} />
-            </div>
-            <input type="file" className="image" onChange={uploadFile} />
-          </div>
-        </Dialog>
-
-        <Dialog
           visible={deleteProductDialog}
           style={{ width: "32rem" }}
           breakpoints={{ "960px": "75vw", "641px": "90vw" }}
@@ -519,28 +256,6 @@ export default function User() {
             {product && (
               <span>
                 Bạn có chắc chắn muốn xóa người dùng <b>{product.full_name}</b>?
-              </span>
-            )}
-          </div>
-        </Dialog>
-
-        <Dialog
-          visible={deleteProductsDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          header="Confirm"
-          modal
-          footer={deleteProductsDialogFooter}
-          onHide={hideDeleteProductsDialog}
-        >
-          <div className="confirmation-content">
-            <i
-              className="pi pi-exclamation-triangle mr-3"
-              style={{ fontSize: "2rem" }}
-            />
-            {product && (
-              <span>
-                Are you sure you want to delete the selected products?
               </span>
             )}
           </div>

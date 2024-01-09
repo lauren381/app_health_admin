@@ -20,8 +20,6 @@ import {
   SearchWorkoutAction,
   UpdateWorkout1Action,
   UpdateWorkoutAction,
-  WorkoutDeleteExercisesAction,
-  WorkoutDeleteMealAction,
 } from "../../redux/action/WorkoutAction";
 import { GetListMealAction } from "../../redux/action/MealAction";
 import { GetListExercisesAction } from "../../redux/action/ExercisesAcrion";
@@ -33,22 +31,25 @@ export default function PlanWorkout() {
   const { arrMeal } = useSelector((root) => root.MealReducer);
   const { arrExercises } = useSelector((root) => root.ExercisesReducer);
   const { arrCategory } = useSelector((root) => root.CategoryReducer);
+
   const [hide, setHide] = useState(false);
+
   const [selectedValueLevel, setSelectedValueLevel] = useState("");
-  const [selectedValueLevel1, setSelectedValueLevel1] = useState("");
+  const [selectedValueCategory, setSelectedValueCategory] = useState("");
+  const [selectedCateName, setSelectedCateName] = useState("");
 
   const handleSelectChangeLevel = (event) => {
     const value = event.target.value; // Lấy giá trị từ event
     setSelectedValueLevel(value); // Cập nhật giá trị được chọn vào state
   };
 
-  const handleSelectChangeLevel1 = (event) => {
+  const handleSelectChangeCategory = (event) => {
     const value = event.target.value; // Lấy giá trị từ event
-    setSelectedValueLevel1(value); // Cập nhật giá trị được chọn vào state
+    setSelectedValueCategory(value); // Cập nhật giá trị được chọn vào state
   };
-  let emptyProduct = {
-    user_id: "0",
 
+  let emptyProduct = {
+    plan_id: "0",
     goal: "",
     fitness_level: "",
     category_id: "",
@@ -58,56 +59,9 @@ export default function PlanWorkout() {
   };
 
   const [selectedIds, setSelectedIds] = useState([]);
-  const [selectedNames, setSelectedNames] = useState([]);
-  const handleSelectChange = (event) => {
-    const selectedId = event.target.value;
-    const selectedItem = arrMeal.find((item) => item.meal_id === selectedId);
-
-    if (selectedItem) {
-      // Kiểm tra xem đã có trong danh sách chưa
-      const idIndex = selectedIds.indexOf(selectedId);
-      if (idIndex !== -1) {
-        // Nếu đã có, loại bỏ khỏi mảng selectedIds
-        const updatedIds = [...selectedIds];
-        updatedIds.splice(idIndex, 1);
-        setSelectedIds(updatedIds);
-
-        // Loại bỏ khỏi mảng selectedNames theo index tương ứng
-        const updatedNames = [...selectedNames];
-        updatedNames.splice(idIndex, 1);
-        setSelectedNames(updatedNames);
-      } else {
-        // Nếu chưa có, thêm vào danh sách
-        setSelectedIds([...selectedIds, selectedId]);
-        setSelectedNames([...selectedNames, selectedItem.meal_name]);
-      }
-    }
-  };
 
   const [selectedIds1, setSelectedIds1] = useState([]);
-  const [selectedNames1, setSelectedNames1] = useState([]);
-  const handleSelectChange1 = (event) => {
-    const selectedId = event.target.value;
-    const selectedItem = arrExercises.find(
-      (item) => item.exercise_id === selectedId
-    );
 
-    if (selectedItem) {
-      const idIndex = selectedIds1.indexOf(selectedId);
-      if (idIndex !== -1) {
-        const updatedIds = [...selectedIds1];
-        updatedIds.splice(idIndex, 1);
-        setSelectedIds1(updatedIds);
-
-        const updatedNames = [...selectedNames1];
-        updatedNames.splice(idIndex, 1);
-        setSelectedNames1(updatedNames);
-      } else {
-        setSelectedIds1([...selectedIds1, selectedId]);
-        setSelectedNames1([...selectedNames1, selectedItem.exercise_name]);
-      }
-    }
-  };
   const uploadFile = (e) => {
     let file = e.target.files[0];
     let fileRef = ref(storage_bucket, file.name);
@@ -124,7 +78,7 @@ export default function PlanWorkout() {
       (err) => console.log(err),
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-          console.log(url);
+          // console.log(url);
           const updatedProduct = { ...product, image: url }; // Update achivementLogo property in product object
           setProduct(updatedProduct);
         });
@@ -166,20 +120,14 @@ export default function PlanWorkout() {
     setFormData(newFormData);
   };
 
-  const [inputValue, setInputValue] = useState("");
   const [text, setText] = useState("Thêm mới kế hoạch tập luyện");
   const [products, setProducts] = useState([]);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-  const [deleteProductDialog1, setDeleteProductDialog1] = useState(false);
   const [detailProductDialog1, setDetailProductDialog1] = useState(false);
-  const [deleteProductDialog2, setDeleteProductDialog2] = useState(false);
-  const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
+  const [createDailyProductDialog2, setCreateDailyProductDialog2] =
+    useState(false);
   const [product, setProduct] = useState(emptyProduct);
-  const [tempProduct, setTempProduct] = useState({ ...emptyProduct });
-  const [selectedProducts, setSelectedProducts] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
-  const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
 
@@ -194,12 +142,12 @@ export default function PlanWorkout() {
     const action3 = GetListCategoryAction();
     dispatch(action3);
   }, []);
+
   useEffect(() => {
     setProducts(arrWorkout.filter((item) => item.status === "active"));
   }, [arrWorkout]);
 
   const hideDialog = () => {
-    setSubmitted(false);
     setProductDialog(false);
   };
 
@@ -209,19 +157,12 @@ export default function PlanWorkout() {
   const hideDetailProductDialog = () => {
     setDetailProductDialog1(false);
   };
-  const hideDeleteProductDialog1 = () => {
-    setDeleteProductDialog1(false);
+
+  const hidecreateDailyProductDialog2 = () => {
+    setCreateDailyProductDialog2(false);
   };
 
-  const hideDeleteProductDialog2 = () => {
-    setDeleteProductDialog2(false);
-  };
-  const hideDeleteProductsDialog = () => {
-    setDeleteProductsDialog(false);
-  };
   const saveProduct = async () => {
-    setSubmitted(true);
-
     if (product.plan_name) {
       let _products = [...products];
       let _product = { ...product };
@@ -232,20 +173,20 @@ export default function PlanWorkout() {
         ...product,
         plan_meal,
         plan_exercises,
-        category_id: selectedValueLevel1,
+        category_id: selectedValueCategory,
       };
-      console.log(data);
-      if (product.user_id !== "0") {
+      // console.log(data);
+      if (product.plan_id !== "0") {
         const index = findIndexById(product.id);
-        console.log(product.category_id);
+        // console.log(product.category_id);
 
         _products[index] = _product;
         const updatedData = { ...data }; // Tạo bản sao của data
-        console.log(updatedData);
+        // console.log(updatedData);
 
         if (updatedData.category_id === "") {
           updatedData.category_id = product.category_id;
-          console.log(updatedData);
+          // console.log(updatedData);
           const action = await UpdateWorkout1Action(updatedData);
           await dispatch(action);
           setProductDialog(false);
@@ -274,7 +215,7 @@ export default function PlanWorkout() {
           plan_meal,
           plan_exercises,
           fitness_level: selectedValueLevel,
-          category_id: selectedValueLevel1,
+          category_id: selectedValueCategory,
         };
         const action = await CreateWorkoutAction(data1);
         await dispatch(action);
@@ -286,10 +227,6 @@ export default function PlanWorkout() {
         });
         setProductDialog(false);
       }
-
-      // setProducts(_products);
-      // setProductDialog(false);
-      // setProduct(emptyProduct);
     }
   };
 
@@ -297,8 +234,12 @@ export default function PlanWorkout() {
     setText("Chỉnh sửa kế hoạch tập luyện");
     const data = product.category_id;
     setProduct({ ...product, category_id: data });
+    setSelectedValueLevel(product.fitness_level);
+    setSelectedValueCategory(
+      arrCategory.find((item) => item.category_id === product.category_id)
+        .category_id
+    );
     setProductDialog(true);
-    setTempProduct({ ...product });
   };
 
   const deleteProduct = async () => {
@@ -319,37 +260,14 @@ export default function PlanWorkout() {
     });
   };
 
-  const deleteProduct1 = async () => {
-    const plan_meal = selectedIds;
-    const plan_exercises = selectedIds1;
-    const data = await { ...product, plan_meal, plan_exercises };
-    console.log(data);
-    const action = await UpdateWorkoutAction(data);
-    await dispatch(action);
-
-    setDeleteProductDialog1(false);
-    setProduct(emptyProduct);
-    toast.current.show({
-      severity: "success",
-      summary: "Thành công",
-      detail: `Cập nhật kế hoạch tập luyện ${product.plan_name} thành công`,
-      life: 3000,
-      options: {
-        style: {
-          zIndex: 100,
-        },
-      },
-    });
-  };
-
-  const deleteProduct2 = async () => {
+  const createNewDailyProduct2 = async () => {
     const updatedFormData = formData.map((formItem) => ({
       ...formItem,
       plan_id: product.plan_id,
     }));
 
     const data = { plan_daily: updatedFormData };
-    setDeleteProductDialog2(false);
+    setCreateDailyProductDialog2(false);
     const action = CreateDailyAction(data);
     dispatch(action);
     toast.current.show({
@@ -373,24 +291,6 @@ export default function PlanWorkout() {
     return index;
   };
 
-  const exportCSV = () => {
-    dt.current.exportCSV();
-  };
-
-  const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts.includes(val));
-
-    setProducts(_products);
-    setDeleteProductsDialog(false);
-    setSelectedProducts(null);
-    toast.current.show({
-      severity: "success",
-      summary: "Successful",
-      detail: "Deleted  Achivement",
-      life: 3000,
-    });
-  };
-
   const onInputChange = (e, name) => {
     if (name === "achivementLogo") {
       uploadFile(e); // Call uploadFile function when achivementLogo value changes
@@ -409,13 +309,11 @@ export default function PlanWorkout() {
     const forbiddenCharacters = /[@!#$%^&*]/g;
 
     if (!forbiddenCharacters.test(newValue)) {
-      setInputValue(newValue);
       // Thực hiện các xử lý khác tại đây
     }
   };
   const openNew = () => {
     setProduct(emptyProduct);
-    setSubmitted(false);
     setProductDialog(true);
   };
 
@@ -432,22 +330,9 @@ export default function PlanWorkout() {
             setHide(false);
           }}
         />
-        {/* <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedProducts || !selectedProducts.length} /> */}
       </div>
     );
   };
-
-  // const rightToolbarTemplate = () => {
-  //   return (
-  //     <Button
-  //       label="Tải xuống"
-  //       icon="pi pi-upload"
-  //       style={{ marginRight: "50px" }}
-  //       className="p-button-help"
-  //       onClick={exportCSV}
-  //     />
-  //   );
-  // };
 
   const imageBodyTemplate = (rowData) => {
     return (
@@ -465,19 +350,18 @@ export default function PlanWorkout() {
     setDeleteProductDialog(true);
   };
 
-  const confirmDeleteProduct1 = (product) => {
-    setProduct(product);
-    setDeleteProductDialog1(true);
-  };
-
   const confirmDetailProduct = (product) => {
     setText("Chi tiết kế hoạch");
     setProduct(product);
+    const ta = arrCategory.find(
+      (item) => item.category_id === product.category_id
+    ).category_name;
+    setSelectedCateName(ta);
     setDetailProductDialog1(true);
   };
-  const confirmDeleteProduct2 = (product) => {
+  const confirmCreateNewDailyProduct2 = (product) => {
     setProduct(product);
-    setDeleteProductDialog2(true);
+    setCreateDailyProductDialog2(true);
   };
   //cột chứ action
   const actionBodyTemplate = (rowData) => {
@@ -507,22 +391,6 @@ export default function PlanWorkout() {
           }}
         />
 
-        {/* <Button
-          icon="pi-bars"
-          rounded
-          outlined
-          tooltip="Thêm bài tập,thực đơn"
-          tooltipOptions={{ position: "top" }}
-          severity="danger"
-          onClick={() => {
-            confirmDeleteProduct1(rowData);
-            setSelectedIds([]);
-            setSelectedNames([]);
-            setSelectedIds1([]);
-            setSelectedNames1([]);
-          }}
-        /> */}
-
         <Button
           icon="pi pi-ellipsis-v"
           rounded
@@ -531,11 +399,9 @@ export default function PlanWorkout() {
           tooltipOptions={{ position: "top" }}
           severity="danger"
           onClick={() => {
-            confirmDeleteProduct2(rowData);
+            confirmCreateNewDailyProduct2(rowData);
             setSelectedIds([]);
-            setSelectedNames([]);
             setSelectedIds1([]);
-            setSelectedNames1([]);
             setFormData([
               { name: "", description: "", meal_id: "", exercise_id: "" },
             ]);
@@ -559,45 +425,14 @@ export default function PlanWorkout() {
       plan_name: "",
     },
     onSubmit: (value) => {
-      console.log(value);
+      // console.log(value);
       const action = SearchWorkoutAction(value);
       dispatch(action);
     },
   });
 
-  const handleDelete = (itemId) => {
-    // Xóa phần tử khỏi mảng PlanMeals
-    const updatedPlanMeals = product.PlanMeals.filter(
-      (item) => item.id !== itemId
-    );
-    console.log(itemId);
-    // Cập nhật object product với mảng mới đã xóa phần tử
-    const updatedProduct = { ...product, PlanMeals: updatedPlanMeals };
-    const action = WorkoutDeleteMealAction(itemId);
-    dispatch(action);
-    const action1 = GetListWorkoutAction();
-    dispatch(action1);
-    // Cập nhật state product
-    setProduct(updatedProduct);
-  };
-  const handleDelete1 = (itemId) => {
-    // Xóa phần tử khỏi mảng PlanMeals
-    const updatedPlanMeals = product.PlanExercises.filter(
-      (item) => item.id !== itemId
-    );
-
-    // Cập nhật object product với mảng mới đã xóa phần tử
-    const updatedProduct = { ...product, PlanExercises: updatedPlanMeals };
-    const action = WorkoutDeleteExercisesAction(itemId);
-    dispatch(action);
-    const action1 = GetListWorkoutAction();
-    dispatch(action1);
-    // Cập nhật state product
-    setProduct(updatedProduct);
-  };
-
   const handleDelete2 = (itemId) => {
-    console.log(itemId);
+    // console.log(itemId);
 
     const updatedPlanMeals = product.DailyPlanDetails.filter(
       (item) => item.detail_id !== itemId
@@ -616,6 +451,7 @@ export default function PlanWorkout() {
       dispatch(action);
     }
   }, [formik.values.plan_name]);
+
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
       <h4 className="m-0 mb-4">Quản lý kế hoạch tập luyện</h4>
@@ -639,7 +475,7 @@ export default function PlanWorkout() {
       {product.goal === "" ||
       selectedValueLevel === "" ||
       product.plan_name === "" ||
-      selectedValueLevel1 === "" ||
+      selectedValueCategory === "" ||
       product.total_time <= 0 ||
       product.image === "" ? (
         <Button
@@ -670,51 +506,19 @@ export default function PlanWorkout() {
     </React.Fragment>
   );
 
-  const deleteProductDialogFooter1 = (
-    <React.Fragment>
-      <Button
-        label="Đồng ý"
-        icon="pi pi-check"
-        severity="danger"
-        onClick={deleteProduct1}
-      />
-      <Button
-        label="Hủy bỏ"
-        icon="pi pi-times"
-        outlined
-        onClick={hideDeleteProductDialog1}
-      />
-    </React.Fragment>
-  );
   const deleteProductDialogFooter2 = (
     <React.Fragment>
       <Button
         label="Đồng ý"
         icon="pi pi-check"
         severity="danger"
-        onClick={deleteProduct2}
+        onClick={createNewDailyProduct2}
       />
       <Button
         label="Hủy bỏ"
         icon="pi pi-times"
         outlined
-        onClick={hideDeleteProductDialog2}
-      />
-    </React.Fragment>
-  );
-  const deleteProductsDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="No"
-        icon="pi pi-times"
-        outlined
-        onClick={hideDeleteProductsDialog}
-      />
-      <Button
-        label="Yes"
-        icon="pi pi-check"
-        severity="danger"
-        onClick={deleteSelectedProducts}
+        onClick={hidecreateDailyProductDialog2}
       />
     </React.Fragment>
   );
@@ -807,7 +611,7 @@ export default function PlanWorkout() {
               required
               autoFocus
             />
-            {product.plan_name === "" && (
+            {product.plan_id !== "0" && product.plan_name === "" && (
               <small className="p-error">Name is required.</small>
             )}
           </div>
@@ -830,7 +634,7 @@ export default function PlanWorkout() {
               autoFocus
               min={0}
             />
-            {product.total_time <= 0 && (
+            {product.plan_id !== "0" && product.total_time <= 0 && (
               <small className="p-error">Total time min 1.</small>
             )}
           </div>
@@ -844,8 +648,14 @@ export default function PlanWorkout() {
               Mức độ
             </label>
             <br />
-            <select className="form-control" onChange={handleSelectChangeLevel}>
-              <option value="">Chọn mức độ</option>
+            <select
+              className="form-control"
+              onChange={handleSelectChangeLevel}
+              defaultValue={product.fitness_level}
+            >
+              <option value="" disabled>
+                Chọn mức độ
+              </option>
               <option value="Underweight">Underweight</option>
               <option value="Normal">Normal</option>
               <option value="Overweight">Overweight</option>
@@ -853,7 +663,7 @@ export default function PlanWorkout() {
               <option value="Obese Level II">Obese Level II</option>
               <option value="Obese Level III">Obese Level III</option>
             </select>
-            {selectedValueLevel === "" && (
+            {product.plan_id !== "0" && selectedValueLevel === "" && (
               <small className="p-error">Fitness level is required.</small>
             )}
           </div>
@@ -873,7 +683,7 @@ export default function PlanWorkout() {
               rows={3}
               cols={20}
             />
-            {product.goal === "" && (
+            {product.plan_id !== "0" && product.goal === "" && (
               <small className="p-error">Goal is required.</small>
             )}
           </div>
@@ -889,18 +699,21 @@ export default function PlanWorkout() {
             <br />
             <select
               className="form-control"
-              onChange={handleSelectChangeLevel1}
+              onChange={handleSelectChangeCategory}
             >
-              <option value={product.category_id} selected>
+              <option value={product.category_id} disabled>
                 Chọn loại kế hoạch
               </option>
-              {arrCategory.map((item, index) => {
-                return (
-                  <option value={item.category_id}>{item.category_name}</option>
-                );
-              })}
+              {arrCategory.map((item, index) => (
+                <option
+                  value={item.category_id}
+                  selected={product.category_id === item.category_id}
+                >
+                  {item.category_name}
+                </option>
+              ))}
             </select>
-            {selectedValueLevel1 === "" && (
+            {product.plan_id !== "0" && selectedValueCategory === "" && (
               <small className="p-error">Field is required.</small>
             )}
           </div>
@@ -915,7 +728,7 @@ export default function PlanWorkout() {
             >
               Hình ảnh
             </label>
-            {product.image === "" && (
+            {product.plan_id !== "0" && product.image === "" && (
               <small className="p-error">Image is required.</small>
             )}
             <div
@@ -1134,8 +947,7 @@ export default function PlanWorkout() {
             <br />
             <InputText
               id="total_time"
-              value={product.category?.category_name}
-              onChange={(e) => onInputChange(e, "fitness_level")}
+              value={selectedCateName}
               required
               autoFocus
               disabled
@@ -1235,91 +1047,16 @@ export default function PlanWorkout() {
             })}
           </div>
         </Dialog>
-        {/*popup thêm mới danh sách và thực đơn */}
-        {/* <Dialog
-          visible={deleteProductDialog1}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          header="Thông Báo"
-          modal
-          footer={deleteProductDialogFooter1}
-          onHide={hideDeleteProductDialog1}
-        >
-          <div className="confirmation-content">
-            <i className=" mr-3" style={{ fontSize: "2rem" }} />
-            {product && (
-              <div>
-                <span>Thêm mới danh sách Thực Đơn, Bài Tập</span>
-                <div style={{ margin: "30px 0" }}>1. Thực Đơn:</div>
-                <div>
-                  <select
-                    className="form-control"
-                    onChange={handleSelectChange}
-                    multiple
-                  >
-                    {arrMeal.map((item, index) => (
-                      <option
-                        className="form-control"
-                        key={index}
-                        value={item.meal_id}
-                      >
-                        {item.meal_name}
-                      </option>
-                    ))}
-                  </select>
-
-                  {/* Hiển thị các lựa chọn đã chọn */}
-        {/* <div>
-                    <h4>Các lựa chọn đã chọn:</h4>
-                    <ul>
-                      {selectedNames?.map((option, index) => (
-                        <li key={index}>{option}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                <div style={{ margin: "30px 0" }}>1. Bài Tập:</div>
-                <div>
-                  <select
-                    className="form-control"
-                    onChange={handleSelectChange1}
-                    multiple
-                  >
-                    {arrExercises.map((item, index) => (
-                      <option
-                        className="form-control"
-                        key={index}
-                        value={item.exercise_id}
-                      >
-                        {item.exercise_name}
-                      </option>
-                    ))}
-                  </select>
-
-                  <div>
-                    <h4>Các lựa chọn đã chọn:</h4>
-                    <ul>
-                      {selectedNames1?.map((option, index) => (
-                        <li key={index}>{option}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </Dialog> */}
 
         {/*popup thêm chi tiet từng ngày*/}
         <Dialog
-          visible={deleteProductDialog2}
+          visible={createDailyProductDialog2}
           style={{ width: "32rem" }}
           breakpoints={{ "960px": "75vw", "641px": "90vw" }}
           header="Thêm chi tiết cho từng ngày"
           modal
           footer={deleteProductDialogFooter2}
-          onHide={hideDeleteProductDialog2}
+          onHide={hidecreateDailyProductDialog2}
         >
           <div>
             {Array.from({ length: formCount }, (_, index) => (
@@ -1402,28 +1139,6 @@ export default function PlanWorkout() {
               </div>
             ))}
             <button onClick={handleAddForm}>Thêm dữ liệu</button>
-          </div>
-        </Dialog>
-        {/*popup xóa */}
-        <Dialog
-          visible={deleteProductsDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          header="Confirm"
-          modal
-          footer={deleteProductsDialogFooter}
-          onHide={hideDeleteProductsDialog}
-        >
-          <div className="confirmation-content">
-            <i
-              className="pi pi-exclamation-triangle mr-3"
-              style={{ fontSize: "2rem" }}
-            />
-            {product && (
-              <span>
-                Are you sure you want to delete the selected products?
-              </span>
-            )}
           </div>
         </Dialog>
       </div>

@@ -8,7 +8,7 @@ export const GetListCategoryAction = () => {
         type: "GET_LIST_CATEGORY",
         arrCategory: result.data.data,
       };
-      console.log(result.data.data);
+      // console.log(result.data.data);
       dispatch(action);
     } catch (error) {
       console.log(error);
@@ -47,7 +47,7 @@ export const SearchCategoryAction = (value) => {
         type: "GET_LIST_CATEGORY",
         arrCategory: result.data.data,
       };
-      console.log(result.data.data);
+      // console.log(result.data.data);
       dispatch(action);
     } catch (error) {
       console.log(error);

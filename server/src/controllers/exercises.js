@@ -16,37 +16,36 @@ const getListExercises = async (req, res) => {
   }
 };
 
-
 const searchExercisesByName = async (req, res) => {
   let { exercisesName } = req.body;
 
   // // Chuẩn hóa chuỗi Unicode
   // exercisesName = exercisesName.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-console.log(exercisesName)
+  // console.log(exercisesName)
   // try {
-    const exercises = await models.Exercises.findAll({
-      where: {
-        exercise_name: {
-          [Op.like]: `%${exercisesName}%` // Sử dụng Op.like thay vì Op.iLike
-        }
-      }
-    });
+  const exercises = await models.Exercises.findAll({
+    where: {
+      exercise_name: {
+        [Op.like]: `%${exercisesName}%`, // Sử dụng Op.like thay vì Op.iLike
+      },
+    },
+  });
 
-    if (exercises.length === 0) {
-      return failCode(res, "No exercises found with this name");
-    }
+  if (exercises.length === 0) {
+    return failCode(res, "No exercises found with this name");
+  }
 
-    succesCode(res, exercises, "Found exercises by name successfully!");
+  succesCode(res, exercises, "Found exercises by name successfully!");
   // } catch (error) {
   //   console.error("Error:", error);
   //   return errorCode(res, "Backend error");
   // }
 };
 
-
 const updateExercises = async (req, res) => {
   try {
-    const { exercise_id, exercise_name,video_url, description,  image } = req.body;
+    const { exercise_id, exercise_name, video_url, description, image } =
+      req.body;
     const exercises = await models.Exercises.update(
       {
         exercise_name,
@@ -66,16 +65,14 @@ const updateExercises = async (req, res) => {
 
 const createExercises = async (req, res) => {
   try {
-    const { exercise_name,video_url, description,  image } = req.body;
-    const exercises = await models.Exercises.create(
-      {
-        exercise_id: uuidv4(),
-        exercise_name,
-        description,
-        video_url,
-        image,
-      }
-    );
+    const { exercise_name, video_url, description, image } = req.body;
+    const exercises = await models.Exercises.create({
+      exercise_id: uuidv4(),
+      exercise_name,
+      description,
+      video_url,
+      image,
+    });
 
     succesCode(res, exercises, "Create Exercises Successfully!!!");
   } catch (error) {
@@ -101,10 +98,11 @@ const deleteExercises = async (req, res) => {
       },
     });
 
-
     // Nếu exercise_id không tồn tại trong cả PlanMeals và DailyPlanDetails, thực hiện xóa
     if (!planMealExists && !dailyPlanDetailExists) {
-      const exercises = await models.Exercises.destroy({ where: { exercise_id } });
+      const exercises = await models.Exercises.destroy({
+        where: { exercise_id },
+      });
       return succesCode(res, exercises, "Xóa thành công");
     } else {
       return failCode(
@@ -117,4 +115,10 @@ const deleteExercises = async (req, res) => {
     return errorCode(res, "Backend error");
   }
 };
-module.exports = { getListExercises, updateExercises, createExercises , searchExercisesByName, deleteExercises};
+module.exports = {
+  getListExercises,
+  updateExercises,
+  createExercises,
+  searchExercisesByName,
+  deleteExercises,
+};

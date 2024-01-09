@@ -8,7 +8,6 @@ export default function Login() {
       password: "",
     },
     onSubmit: (value) => {
-      console.log(value);
       if (value.username === "admin" && value.password === "1234") {
         history.push("/meal");
         localStorage.setItem("admin", "admin");
@@ -52,12 +51,6 @@ export default function Login() {
                   onChange={formik.handleChange}
                 />
               </div>
-              {/* <div className="d-flex align-items-center justify-content-between">
-                <div className="d-flex align-items-center"></div>
-                <div>
-                  <a href="#">Quên mật khẩu?</a>
-                </div>
-              </div> */}
               <div className="pb-2">
                 <button
                   type="submit"

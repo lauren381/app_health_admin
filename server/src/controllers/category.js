@@ -69,21 +69,19 @@ const deleteCategory = async (req, res) => {
   }
 };
 
-
-
 const searchCategoryByName = async (req, res) => {
   let { category_name } = req.body;
 
   // // Chuẩn hóa chuỗi Unicode
   // category_name = category_name.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-console.log(category_name)
+  // console.log(category_name)
   try {
     const category = await models.Category.findAll({
       where: {
         category_name: {
-          [Op.like]: `%${category_name}%` // Sử dụng Op.like thay vì Op.iLike
-        }
-      }
+          [Op.like]: `%${category_name}%`, // Sử dụng Op.like thay vì Op.iLike
+        },
+      },
     });
 
     if (category.length === 0) {
@@ -96,4 +94,10 @@ console.log(category_name)
     return errorCode(res, "Backend error");
   }
 };
-module.exports = { getListCategory, createCategory, updateCategory, deleteCategory, searchCategoryByName };
+module.exports = {
+  getListCategory,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+  searchCategoryByName,
+};
